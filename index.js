@@ -1,6 +1,7 @@
 const express = require("express");
 const { connection } = require("./configs/db");
-const {userRouter} = require("./Routes/user.routes")
+const { userRouter } = require("./Routes/user.routes");
+const { weatherRouter } = require("./Routes/weather.routes");
 const {authentication} = require("./Middlewares/logger")
 const app = express();
 app.use(express.json())
@@ -14,7 +15,7 @@ require("dotenv").config();
 
 app.use("/users",userRouter)
 app.use(authentication)
-
+app.use("/weather",weatherRouter)
 
 
 app.listen(process.env.PORT,async()=>{

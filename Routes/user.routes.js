@@ -64,26 +64,41 @@ userRouter.post("login",async(req,res)=>{
 
 })
 
+// userRouter.get("/logout",async(req,res)=>{
+//     const token = req.headers.authorization.split(" ")[1];
+//     try{
+
+//         const blacklist_user = new blackmodel({token});
+//         await blacklist_user.save();
+
+//         const blacklist = JSON.parse(fs.readFileSync("./Blacklist.json","utf-8"));
+
+//         blacklist.push(token)
+
+//         fs.writeFileSync("./Blacklist.json", JSON.stringify(blacklist))
+
+//         res.send({msg:"logout Succcessfully"})
+//     }
+//     catch(e){
+//         res.send({msg:"something went wrong"})
+//     }
+// })
 userRouter.get("/logout",async(req,res)=>{
-    const token = req.headers.authorization.split(" ")[1];
-    try{
-
-        const blacklist_user = new blackmodel({token});
-        await blacklist_user.save();
-
-        const blacklist = JSON.parse(fs.readFileSync("./Blacklist.json","utf-8"));
-
-        blacklist.push(token)
-
-        fs.writeFileSync("./Blacklist.json", JSON.stringify(blacklist))
-
-        res.send({msg:"logout Succcessfully"})
-    }
-    catch(e){
-        res.send({msg:"something went wrong"})
+    try {
+        let  token=req.headers.authorization.split(" ")[1];
+        redisClient.sadd('blacklistedTokens', token, (err,reply) => {
+            if (err) {
+              console.error(err);
+              res.status(500).send('Error blacklisting token');
+            } else {
+              console.log(`${token} has been blacklisted`);
+              res.status(200).send('Token blacklisted successfully');
+            }
+          });
+    } catch (error) {
+        res.send({msg:"something went wrong",error:error.message}) 
     }
 })
-
 
 userRouter.get("/getnewtoken",async(req,res)=>{
     const ref_token = req.headers.authorization.split(" ")[1];
@@ -108,4 +123,4 @@ userRouter.get("/getnewtoken",async(req,res)=>{
 
 
 
-module.exports = {userRouter}
+module.exports = {userRouter,redisClient}
