@@ -64,25 +64,7 @@ userRouter.post("login",async(req,res)=>{
 
 })
 
-// userRouter.get("/logout",async(req,res)=>{
-//     const token = req.headers.authorization.split(" ")[1];
-//     try{
 
-//         const blacklist_user = new blackmodel({token});
-//         await blacklist_user.save();
-
-//         const blacklist = JSON.parse(fs.readFileSync("./Blacklist.json","utf-8"));
-
-//         blacklist.push(token)
-
-//         fs.writeFileSync("./Blacklist.json", JSON.stringify(blacklist))
-
-//         res.send({msg:"logout Succcessfully"})
-//     }
-//     catch(e){
-//         res.send({msg:"something went wrong"})
-//     }
-// })
 userRouter.get("/logout",async(req,res)=>{
     try {
         let  token=req.headers.authorization.split(" ")[1];
@@ -123,4 +105,4 @@ userRouter.get("/getnewtoken",async(req,res)=>{
 
 
 
-module.exports = {userRouter,redisClient}
+module.exports = {userRouter}
